@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <Label prefHeight="82.0" prefWidth="570.0" text="Sobre o Sistema">
+         <font>
+            <Font name="System Bold" size="27.0" />
+         </font>
+         <VBox.margin>
+            <Insets />
+         </VBox.margin>
+         <padding>
+            <Insets left="200.0" />
+         </padding>
+      </Label>
+      <Label contentDisplay="CENTER" disable="true" prefHeight="154.0" prefWidth="595.0" text="Sistema em JavaFX  2022">
+         <font>
+            <Font size="29.0" />
+         </font>
+         <padding>
+            <Insets left="130.0" />
+         </padding>
+      </Label>
+   </children>
+</VBox>

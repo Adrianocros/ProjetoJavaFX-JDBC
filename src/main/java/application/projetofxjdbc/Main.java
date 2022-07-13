@@ -10,6 +10,9 @@ import java.io.IOException;
 
 public class Main extends Application {
 
+    //Expondo referencia para a Sena
+    private static Scene mainScene;
+
     @Override
     public void start(Stage primaryStage) {
         try {
@@ -19,13 +22,18 @@ public class Main extends Application {
             scrollPane.setFitToHeight(true);
             scrollPane.setFitToWidth(true);
 
-            Scene mainScene = new Scene(scrollPane);
+            mainScene = new Scene(scrollPane);
             primaryStage.setScene(mainScene);
             primaryStage.setTitle("Sample JavaFX application");
             primaryStage.show();
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    //Metodo que pega a referencia da Scena
+    public static Scene getMainScene(){
+        return mainScene;
     }
 
 
