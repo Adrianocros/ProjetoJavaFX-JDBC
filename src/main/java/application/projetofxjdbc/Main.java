@@ -9,13 +9,13 @@ import javafx.stage.Stage;
 import java.io.IOException;
 
 public class Main extends Application {
+
     @Override
     public void start(Stage primaryStage) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("MainView.fxml"));
             ScrollPane scrollPane = loader.load();
 
-            //Ajusta menu na tela
             scrollPane.setFitToHeight(true);
             scrollPane.setFitToWidth(true);
 
