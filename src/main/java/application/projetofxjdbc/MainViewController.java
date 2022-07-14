@@ -1,6 +1,7 @@
 package application.projetofxjdbc;
 
 import application.projetofxjdbc.Util.Alerts;
+import application.projetofxjdbc.model.services.DepartmentService;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -33,7 +34,7 @@ public class MainViewController implements Initializable {
 
     @FXML
     public void onMenuItemDepartamentosAction() {
-        loadView("ListaDepartamento.fxml");
+        loadViewTwo("ListaDepartamento.fxml");
     }
 
     @FXML
@@ -44,6 +45,7 @@ public class MainViewController implements Initializable {
     @Override
     public void initialize(URL uri, ResourceBundle rb) {
     }
+
     // synchronized - Para nao interromper a aplicação
     private synchronized void loadView(String absolutName){
         try {
@@ -53,13 +55,36 @@ public class MainViewController implements Initializable {
             Scene mainScene = Main.getMainScene();
             VBox mainVBox = (VBox)((ScrollPane) mainScene.getRoot()).getContent();//referencia para o VBox
 
+            //Preservar o menuBar
+            Node mainMenu = mainVBox.getChildren().get(0);//Primeiro filho da janela VBox
+            mainVBox.getChildren().clear();
+            mainVBox.getChildren().add(mainMenu);
+            mainVBox.getChildren().addAll(newVbox.getChildren());
 
+        } catch (IOException e) {
+            Alerts.showAlert("Encontrado um erro !","Erro ao carregar a pagina",e.getMessage(), Alert.AlertType.ERROR);
+        }
+    }
+
+    // synchronized - Para nao interromper a aplicação
+    private synchronized void loadViewTwo(String absolutName){
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(absolutName));
+            VBox newVbox = loader.load();
+
+            Scene mainScene = Main.getMainScene();
+            VBox mainVBox = (VBox)((ScrollPane) mainScene.getRoot()).getContent();//referencia para o VBox
 
             //Preservar o menuBar
             Node mainMenu = mainVBox.getChildren().get(0);//Primeiro filho da janela VBox
             mainVBox.getChildren().clear();
             mainVBox.getChildren().add(mainMenu);
             mainVBox.getChildren().addAll(newVbox.getChildren());
+
+            //processo manual par ingetar a depentencia e mostra na tela
+            DepartamentoListController controller = loader.getController();
+            controller.setDepartamentoService(new DepartmentService());
+            controller.updateTableView();
 
         } catch (IOException e) {
             Alerts.showAlert("Encontrado um erro !","Erro ao carregar a pagina",e.getMessage(), Alert.AlertType.ERROR);
