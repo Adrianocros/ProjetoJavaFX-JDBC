@@ -15,6 +15,7 @@ import javafx.scene.layout.VBox;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
+import java.util.function.Consumer;
 
 public class MainViewController implements Initializable {
 
@@ -34,12 +35,16 @@ public class MainViewController implements Initializable {
 
     @FXML
     public void onMenuItemDepartamentosAction() {
-        loadViewTwo("ListaDepartamento.fxml");
+        loadView("ListaDepartamento.fxml", (DepartamentoListController controller) -> {
+            //Inicialização do controller
+            controller.setDepartamentoService(new DepartmentService());
+            controller.updateTableView();
+        });
     }
 
     @FXML
     public void onMenuItemSobreAction() {
-        loadView("Sobre.fxml");
+        loadView("Sobre.fxml", x -> {});
     }
 
     @Override
@@ -47,7 +52,7 @@ public class MainViewController implements Initializable {
     }
 
     // synchronized - Para nao interromper a aplicação
-    private synchronized void loadView(String absolutName){
+    private synchronized <T> void loadView(String absolutName, Consumer<T> initializinAction){
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(absolutName));
             VBox newVbox = loader.load();
@@ -61,30 +66,9 @@ public class MainViewController implements Initializable {
             mainVBox.getChildren().add(mainMenu);
             mainVBox.getChildren().addAll(newVbox.getChildren());
 
-        } catch (IOException e) {
-            Alerts.showAlert("Encontrado um erro !","Erro ao carregar a pagina",e.getMessage(), Alert.AlertType.ERROR);
-        }
-    }
-
-    // synchronized - Para nao interromper a aplicação
-    private synchronized void loadViewTwo(String absolutName){
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource(absolutName));
-            VBox newVbox = loader.load();
-
-            Scene mainScene = Main.getMainScene();
-            VBox mainVBox = (VBox)((ScrollPane) mainScene.getRoot()).getContent();//referencia para o VBox
-
-            //Preservar o menuBar
-            Node mainMenu = mainVBox.getChildren().get(0);//Primeiro filho da janela VBox
-            mainVBox.getChildren().clear();
-            mainVBox.getChildren().add(mainMenu);
-            mainVBox.getChildren().addAll(newVbox.getChildren());
-
-            //processo manual par ingetar a depentencia e mostra na tela
-            DepartamentoListController controller = loader.getController();
-            controller.setDepartamentoService(new DepartmentService());
-            controller.updateTableView();
+            //Ativando e executa a função Consumer e retorna o controlador que chamou
+            T controller = loader.getController();
+            initializinAction.accept(controller);
 
         } catch (IOException e) {
             Alerts.showAlert("Encontrado um erro !","Erro ao carregar a pagina",e.getMessage(), Alert.AlertType.ERROR);
