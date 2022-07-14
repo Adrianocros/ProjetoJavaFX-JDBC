@@ -1,6 +1,7 @@
 module application.projetofxjdbc {
     requires javafx.controls;
     requires javafx.fxml;
+    requires java.sql;
 
 
     opens application.projetofxjdbc to javafx.fxml;
