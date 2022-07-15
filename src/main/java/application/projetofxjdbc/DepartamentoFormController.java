@@ -4,6 +4,7 @@ import application.projetofxjdbc.Util.Alerts;
 import application.projetofxjdbc.Util.Constrants;
 import application.projetofxjdbc.Util.Utils;
 import application.projetofxjdbc.db.DbException;
+import application.projetofxjdbc.listeners.DataChangeListener;
 import application.projetofxjdbc.model.entities.Departamento;
 import application.projetofxjdbc.model.services.DepartmentService;
 import javafx.event.ActionEvent;
@@ -15,6 +16,8 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
 
 public class DepartamentoFormController implements Initializable {
@@ -23,6 +26,7 @@ public class DepartamentoFormController implements Initializable {
 
     private DepartmentService service;
 
+    private List<DataChangeListener> dataChangeListeners = new ArrayList<>();
 
     //Declaração dos componentes da tela
     @FXML
@@ -48,6 +52,10 @@ public class DepartamentoFormController implements Initializable {
     public void setDepartamentService(DepartmentService service){
         this.service = service;
     }
+    //Escrevena lista
+    public void subscribeDataChangeListener(DataChangeListener listener){
+        dataChangeListeners.add(listener);
+    }
 
     //Tratamento dos eventos
     @FXML
@@ -61,12 +69,20 @@ public class DepartamentoFormController implements Initializable {
         try {
             entity = getFormDate();
             service.saveOrUpdate(entity);//savando no banco
+            notifiDataChangeListeners();
             Utils.currentStage(event).close();//Fechando a janela apos salvar
         }catch (DbException e){
             Alerts.showAlert("Erro ao salvar!",null,e.getMessage(), Alert.AlertType.ERROR);
         }
 
     }
+
+    private void notifiDataChangeListeners() {
+        for(DataChangeListener listener : dataChangeListeners){
+            listener.onDataChanged();
+        }
+    }
+
 
     //Pega os dados do formulario
     private Departamento getFormDate() {
@@ -90,12 +106,8 @@ public class DepartamentoFormController implements Initializable {
         Constrants.setTextFieldInteger(txtId);
         Constrants.setTextFieldMaxLength(txtNome,30);
     }
-
     public void updateFormData(){
         txtId.setText(String.valueOf(entity.getId()));
         txtNome.setText(String.valueOf(entity.getNome()));
     }
-
-
-
 }

@@ -2,6 +2,7 @@ package application.projetofxjdbc;
 
 import application.projetofxjdbc.Util.Alerts;
 import application.projetofxjdbc.Util.Utils;
+import application.projetofxjdbc.listeners.DataChangeListener;
 import application.projetofxjdbc.model.entities.Departamento;
 import application.projetofxjdbc.model.services.DepartmentService;
 import javafx.collections.FXCollections;
@@ -25,9 +26,11 @@ import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
 
-public class DepartamentoListController implements Initializable {
+public class DepartamentoListController implements Initializable, DataChangeListener {
 
     private DepartmentService service;
+
+
 
     //Referencia para a tela do Lista de Depto
     @FXML
@@ -90,7 +93,9 @@ public class DepartamentoListController implements Initializable {
             DepartamentoFormController controller = loader.getController();
             controller.setDepartamento(obj);
             controller.setDepartamentService(new DepartmentService());
+            controller.subscribeDataChangeListener(this);
             controller.updateFormData();
+
 
             //Novo stade para sobrepor a tela inicial
             Stage dialogstage = new Stage();
@@ -104,5 +109,11 @@ public class DepartamentoListController implements Initializable {
         }catch (IOException e){
             Alerts.showAlert("IOException", "Erro ao carregar a View", e.getMessage(), Alert.AlertType.ERROR);
         }
+    }
+
+    //Atualiza os dados da tabela
+    @Override
+    public void onDataChanged() {
+        updateTableView();
     }
 }

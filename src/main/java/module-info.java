@@ -10,4 +10,6 @@ module application.projetofxjdbc {
     opens application.projetofxjdbc.model.services to javafx.fxml;
     exports application.projetofxjdbc.model.entities;
     opens application.projetofxjdbc.model.entities to javafx.fxml;
+    exports application.projetofxjdbc.listeners;
+    opens application.projetofxjdbc.listeners to javafx.fxml;
 }
