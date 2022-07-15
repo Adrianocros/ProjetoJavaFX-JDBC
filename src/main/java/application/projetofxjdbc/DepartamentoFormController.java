@@ -6,6 +6,7 @@ import application.projetofxjdbc.Util.Utils;
 import application.projetofxjdbc.db.DbException;
 import application.projetofxjdbc.listeners.DataChangeListener;
 import application.projetofxjdbc.model.entities.Departamento;
+import application.projetofxjdbc.model.exceptions.ValidationException;
 import application.projetofxjdbc.model.services.DepartmentService;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -16,9 +17,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.ResourceBundle;
+import java.util.*;
 
 public class DepartamentoFormController implements Initializable {
 
@@ -71,7 +70,11 @@ public class DepartamentoFormController implements Initializable {
             service.saveOrUpdate(entity);//savando no banco
             notifiDataChangeListeners();
             Utils.currentStage(event).close();//Fechando a janela apos salvar
-        }catch (DbException e){
+        }
+        catch (ValidationException e){
+            setErrorMessage(e.getErros());
+        }
+        catch (DbException e){
             Alerts.showAlert("Erro ao salvar!",null,e.getMessage(), Alert.AlertType.ERROR);
         }
 
@@ -87,9 +90,19 @@ public class DepartamentoFormController implements Initializable {
     //Pega os dados do formulario
     private Departamento getFormDate() {
         Departamento obj = new Departamento();
+
+        ValidationException exception = new ValidationException("Erro na validação");
+
         obj.setId(Utils.tryParseToInt(txtId.getText()));
+        if(txtNome.getText() == null || txtNome.getText().trim().equals("")){
+            exception.addErro("Nome","O campo não pode ser vazio!");
+        }
         obj.setNome(txtNome.getText());
-        return obj;
+
+        if(exception.getErros().size() > 0){
+         throw exception;
+        }
+        return  obj;
     }
 
     @FXML
@@ -109,5 +122,12 @@ public class DepartamentoFormController implements Initializable {
     public void updateFormData(){
         txtId.setText(String.valueOf(entity.getId()));
         txtNome.setText(String.valueOf(entity.getNome()));
+    }
+    //Responsavel por retornar a mensagem de erro na tela
+    private void setErrorMessage(Map<String, String> erros){
+        Set<String> fields = erros.keySet();
+        if(fields.contains("Nome")){
+            labelErroName.setText(erros.get("Nome"));
+        }
     }
 }
