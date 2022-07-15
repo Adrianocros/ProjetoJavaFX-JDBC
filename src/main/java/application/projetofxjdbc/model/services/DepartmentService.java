@@ -15,4 +15,12 @@ public class DepartmentService {
         //Chamada no banco
         return dao.findAll();
     }
+    //Verifica o obj inser ou atualizada
+    public void saveOrUpdate(Departamento obj){
+        if(obj.getId() == null){
+            dao.insert(obj);
+        }else {
+            dao.update(obj);
+        }
+    }
 }

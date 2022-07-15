@@ -89,6 +89,7 @@ public class DepartamentoListController implements Initializable {
 
             DepartamentoFormController controller = loader.getController();
             controller.setDepartamento(obj);
+            controller.setDepartamentService(new DepartmentService());
             controller.updateFormData();
 
             //Novo stade para sobrepor a tela inicial

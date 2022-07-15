@@ -1,9 +1,15 @@
 package application.projetofxjdbc;
 
+import application.projetofxjdbc.Util.Alerts;
 import application.projetofxjdbc.Util.Constrants;
+import application.projetofxjdbc.Util.Utils;
+import application.projetofxjdbc.db.DbException;
 import application.projetofxjdbc.model.entities.Departamento;
+import application.projetofxjdbc.model.services.DepartmentService;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -14,6 +20,8 @@ import java.util.ResourceBundle;
 public class DepartamentoFormController implements Initializable {
 
     private Departamento entity;
+
+    private DepartmentService service;
 
 
     //Declaração dos componentes da tela
@@ -37,15 +45,40 @@ public class DepartamentoFormController implements Initializable {
         this.entity = entity;
     }
 
+    public void setDepartamentService(DepartmentService service){
+        this.service = service;
+    }
+
     //Tratamento dos eventos
     @FXML
-    public void onBtSaveAction(){
-        System.out.println("Departamento cadastrado!");
+    public void onBtSaveAction(ActionEvent event){
+        if(entity == null){
+            throw new IllegalStateException("Valor null na entidade");
+        }
+        if(service == null){
+            throw new IllegalStateException("Serivço esta nullo");
+        }
+        try {
+            entity = getFormDate();
+            service.saveOrUpdate(entity);//savando no banco
+            Utils.currentStage(event).close();//Fechando a janela apos salvar
+        }catch (DbException e){
+            Alerts.showAlert("Erro ao salvar!",null,e.getMessage(), Alert.AlertType.ERROR);
+        }
+
+    }
+
+    //Pega os dados do formulario
+    private Departamento getFormDate() {
+        Departamento obj = new Departamento();
+        obj.setId(Utils.tryParseToInt(txtId.getText()));
+        obj.setNome(txtNome.getText());
+        return obj;
     }
 
     @FXML
-    public void onBtCancelarAction(){
-        System.out.println("Processo cancelado!");
+    public void onBtCancelarAction(ActionEvent event){
+        Utils.currentStage(event).close();//Fecha janela
     }
 
     @Override
@@ -62,4 +95,7 @@ public class DepartamentoFormController implements Initializable {
         txtId.setText(String.valueOf(entity.getId()));
         txtNome.setText(String.valueOf(entity.getNome()));
     }
+
+
+
 }
