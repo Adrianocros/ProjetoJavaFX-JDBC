@@ -1,6 +1,7 @@
 package application.projetofxjdbc;
 
 import application.projetofxjdbc.Util.Constrants;
+import application.projetofxjdbc.model.entities.Departamento;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
@@ -11,6 +12,9 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 public class DepartamentoFormController implements Initializable {
+
+    private Departamento entity;
+
 
     //Declaração dos componentes da tela
     @FXML
@@ -28,6 +32,10 @@ public class DepartamentoFormController implements Initializable {
     @FXML
     private Button btCancelar;
 
+    //instnacia do depto
+    public void setDepartamento(Departamento entity){
+        this.entity = entity;
+    }
 
     //Tratamento dos eventos
     @FXML
@@ -50,4 +58,8 @@ public class DepartamentoFormController implements Initializable {
         Constrants.setTextFieldMaxLength(txtNome,30);
     }
 
+    public void updateFormData(){
+        txtId.setText(String.valueOf(entity.getId()));
+        txtNome.setText(String.valueOf(entity.getNome()));
+    }
 }
