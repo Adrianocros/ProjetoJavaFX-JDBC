@@ -23,4 +23,8 @@ public class DepartmentService {
             dao.update(obj);
         }
     }
+    //remove o dpto do banco
+    public void remove(Departamento obj){
+        dao.deleteById(obj.getId());
+    }
 }

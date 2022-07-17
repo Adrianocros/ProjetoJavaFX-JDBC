@@ -2,6 +2,7 @@ package application.projetofxjdbc;
 
 import application.projetofxjdbc.Util.Alerts;
 import application.projetofxjdbc.Util.Utils;
+import application.projetofxjdbc.db.DbIntegrityException;
 import application.projetofxjdbc.listeners.DataChangeListener;
 import application.projetofxjdbc.model.entities.Departamento;
 import application.projetofxjdbc.model.services.DepartmentService;
@@ -22,6 +23,7 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.net.URL;
 import java.util.List;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 public class DepartamentoListController implements Initializable, DataChangeListener {
@@ -41,6 +43,9 @@ public class DepartamentoListController implements Initializable, DataChangeList
 
     @FXML
     private TableColumn<Departamento, Departamento> tableColumnEdit;
+
+    @FXML
+    private TableColumn<Departamento, Departamento> tableColumnRenove;
 
     @FXML
     private Button btNovo;
@@ -82,7 +87,8 @@ public class DepartamentoListController implements Initializable, DataChangeList
         List<Departamento> list = service.findAll();
         obsList = FXCollections.observableArrayList(list);//Pega os dados da lista
         tableViewDepartamento.setItems(obsList);
-        initEditButtons();//acrescenta o botão em cada linha da tabela.
+        initEditButtons();//acrescenta o botão edit em cada linha da tabela.
+        initRemoveButtons();//acrescenta o botão remover em cada linha da tabela.
     }
 
     //Metodo para o formulario
@@ -135,6 +141,42 @@ public class DepartamentoListController implements Initializable, DataChangeList
                                 obj, "FormularioDepartamento.fxml",Utils.currentStage(event)));
             }
         });
+    }
+
+    private void initRemoveButtons(){
+        tableColumnRenove.setCellValueFactory(param -> new ReadOnlyObjectWrapper<>(param.getValue()));
+        tableColumnRenove.setCellFactory(param -> new TableCell<Departamento, Departamento>(){
+            private final Button button = new Button("Remover");
+
+            @Override
+            protected void updateItem(Departamento obj, boolean empty){
+                super.updateItem(obj, empty);
+                if(obj == null){
+                    setGraphic(null);
+                    return;
+                }
+                setGraphic(button);
+                button.setOnAction(event -> removeEntity(obj));
+            }
+        });
+    }
+
+    //removendo o depto
+    private void removeEntity(Departamento obj) {
+        Optional<ButtonType> result = Alerts.showConfirmation("confirmação", "Deseja remover o departamento ?");
+
+        //verifica se confima ou não a delação
+        if(result.get() == ButtonType.OK){
+            if(service == null){
+                throw new IllegalStateException("Servçoa esta null!");
+            }
+            try {
+                service.remove(obj);
+                updateTableView();
+            }catch (DbIntegrityException e){
+                Alerts.showAlert("Erro ao remover", null,e.getMessage(), Alert.AlertType.ERROR);
+            }
+        }
     }
 
 }
