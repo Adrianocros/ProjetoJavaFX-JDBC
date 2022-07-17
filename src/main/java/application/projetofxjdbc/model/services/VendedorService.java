@@ -1,22 +1,21 @@
 package application.projetofxjdbc.model.services;
 
 import application.projetofxjdbc.model.dao.DaoFactory;
-import application.projetofxjdbc.model.dao.DepartamentoDao;
-import application.projetofxjdbc.model.entities.Departamento;
+import application.projetofxjdbc.model.dao.VendedorDao;
+import application.projetofxjdbc.model.entities.Vendedor;
 
-import java.util.ArrayList;
 import java.util.List;
 
-public class DepartmentService {
+public class VendedorService {
 
-    private DepartamentoDao dao = DaoFactory.createDepartamentoDao();
+    private VendedorDao dao = DaoFactory.createVendedorDao();
 
-    public List<Departamento> findAll(){
+    public List<Vendedor> findAll(){
         //Chamada no banco
         return dao.findAll();
     }
     //Verifica o obj inser ou atualizada
-    public void saveOrUpdate(Departamento obj){
+    public void saveOrUpdate(Vendedor obj){
         if(obj.getId() == null){
             dao.insert(obj);
         }else {
@@ -24,7 +23,7 @@ public class DepartmentService {
         }
     }
     //remove o dpto do banco
-    public void remove(Departamento obj){
+    public void remove(Vendedor obj){
         dao.deleteById(obj.getId());
     }
 }
