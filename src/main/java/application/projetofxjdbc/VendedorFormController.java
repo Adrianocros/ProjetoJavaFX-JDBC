@@ -12,12 +12,11 @@ import application.projetofxjdbc.model.services.VendedorService;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 
 import java.net.URL;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.*;
 
 public class VendedorFormController implements Initializable {
@@ -36,7 +35,25 @@ public class VendedorFormController implements Initializable {
     private TextField txtNome;
 
     @FXML
+    private TextField txtEmail;
+
+    @FXML
+    private DatePicker dpDataNasc;
+
+    @FXML
+    private TextField txtSalarioBase;
+
+    @FXML
     private Label labelErroName;
+
+    @FXML
+    private Label labelErroEmail;
+
+    @FXML
+    private Label labelErroDataNasc;
+
+    @FXML
+    private Label labelErroSalarioBase;
 
     @FXML
     private Button btSalvar;
@@ -118,11 +135,20 @@ public class VendedorFormController implements Initializable {
 
     private void  inicializacaoNodes(){
         Constrants.setTextFieldInteger(txtId);
-        Constrants.setTextFieldMaxLength(txtNome,30);
+        Constrants.setTextFieldMaxLength(txtNome,70);
+        Constrants.setTextFieldDouble(txtSalarioBase);
+        Constrants.setTextFieldMaxLength(txtEmail,100);
+        Utils.formatDatePicker(dpDataNasc,"dd/MM/yyyy");
     }
     public void updateFormData(){
         txtId.setText(String.valueOf(entity.getId()));
         txtNome.setText(String.valueOf(entity.getNome()));
+        txtEmail.setText(entity.getEmail());
+        Locale.setDefault(Locale.US);
+        txtSalarioBase.setText(String.format("%.2f",entity.getSalarioBase()));
+        if(entity.getDataNasc() != null){
+            dpDataNasc.setValue(LocalDate.ofInstant(entity.getDataNasc().toInstant(), ZoneId.systemDefault()));
+        }
     }
     //Responsavel por retornar a mensagem de erro na tela
     private void setErrorMessage(Map<String, String> erros){
