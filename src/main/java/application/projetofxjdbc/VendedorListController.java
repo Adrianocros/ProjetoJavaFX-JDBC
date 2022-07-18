@@ -5,18 +5,22 @@ import application.projetofxjdbc.Util.Utils;
 import application.projetofxjdbc.db.DbIntegrityException;
 import application.projetofxjdbc.listeners.DataChangeListener;
 import application.projetofxjdbc.model.entities.Vendedor;
-import application.projetofxjdbc.model.services.DepartmentService;
 import application.projetofxjdbc.model.services.VendedorService;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.Pane;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.Date;
 import java.util.List;
@@ -64,7 +68,7 @@ public class VendedorListController implements Initializable, DataChangeListener
     public void onBtNovoAction(ActionEvent event){
         Stage parentState = Utils.currentStage(event);
         Vendedor obj = new Vendedor();
-        createdDialogForm(obj,"Vendedor.fxml",parentState);
+        createdDialogForm(obj,"FormularioVendedor.fxml",parentState);
     }
 
     //Ingetando a dependencia
@@ -103,29 +107,29 @@ public class VendedorListController implements Initializable, DataChangeListener
 
     //Metodo para o formulario
     private void createdDialogForm(Vendedor obj,String absolutName,Stage parentStage){
-//        try {
-//            FXMLLoader loader = new FXMLLoader(getClass().getResource(absolutName));
-//            Pane pane = loader.load();
-//
-//            VendedorFormController controller = loader.getController();
-//            controller.setVendedor(obj);
-//            controller.setDepartamentService(new DepartmentService());
-//            controller.subscribeDataChangeListener(this);
-//            controller.updateFormData();
-//
-//
-//            //Novo stade para sobrepor a tela inicial
-//            Stage dialogstage = new Stage();
-//            dialogstage.setTitle("Cadastro de Vendedor");
-//            dialogstage.setScene(new Scene(pane));
-//            dialogstage.setResizable(false);//Janela nao redimenciona
-//            dialogstage.initOwner(parentStage);//Stage Pai da janela
-//            dialogstage.initModality(Modality.WINDOW_MODAL);//Janela modal ou não
-//            dialogstage.showAndWait();
-//
-//        }catch (IOException e){
-//            Alerts.showAlert("IOException", "Erro ao carregar a View", e.getMessage(), Alert.AlertType.ERROR);
-//        }
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(absolutName));
+            Pane pane = loader.load();
+
+            VendedorFormController controller = loader.getController();
+            controller.setVendedor(obj);
+            controller.setVendedorService(new VendedorService());
+            controller.subscribeDataChangeListener(this);
+            controller.updateFormData();
+
+
+            //Novo stade para sobrepor a tela inicial
+            Stage dialogstage = new Stage();
+            dialogstage.setTitle("Cadastro de Vendedor");
+            dialogstage.setScene(new Scene(pane));
+            dialogstage.setResizable(false);//Janela nao redimenciona
+            dialogstage.initOwner(parentStage);//Stage Pai da janela
+            dialogstage.initModality(Modality.WINDOW_MODAL);//Janela modal ou não
+            dialogstage.showAndWait();
+
+        }catch (IOException e){
+            Alerts.showAlert("IOException", "Erro ao carregar a View", e.getMessage(), Alert.AlertType.ERROR);
+        }
     }
 
     //Atualiza os dados da tabela
