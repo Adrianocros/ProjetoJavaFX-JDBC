@@ -5,6 +5,7 @@ import application.projetofxjdbc.Util.Utils;
 import application.projetofxjdbc.db.DbIntegrityException;
 import application.projetofxjdbc.listeners.DataChangeListener;
 import application.projetofxjdbc.model.entities.Vendedor;
+import application.projetofxjdbc.model.services.DepartmentService;
 import application.projetofxjdbc.model.services.VendedorService;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.collections.FXCollections;
@@ -113,10 +114,10 @@ public class VendedorListController implements Initializable, DataChangeListener
 
             VendedorFormController controller = loader.getController();
             controller.setVendedor(obj);
-            controller.setVendedorService(new VendedorService());
+            controller.setServices(new VendedorService(), new DepartmentService());
+            controller.loadAssociatedObject();//Carrega os dpto
             controller.subscribeDataChangeListener(this);
             controller.updateFormData();
-
 
             //Novo stade para sobrepor a tela inicial
             Stage dialogstage = new Stage();
@@ -128,6 +129,7 @@ public class VendedorListController implements Initializable, DataChangeListener
             dialogstage.showAndWait();
 
         }catch (IOException e){
+            e.printStackTrace();
             Alerts.showAlert("IOException", "Erro ao carregar a View", e.getMessage(), Alert.AlertType.ERROR);
         }
     }

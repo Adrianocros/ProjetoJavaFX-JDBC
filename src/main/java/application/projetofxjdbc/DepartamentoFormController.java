@@ -94,7 +94,7 @@ public class DepartamentoFormController implements Initializable {
         ValidationException exception = new ValidationException("Erro na validação");
 
         obj.setId(Utils.tryParseToInt(txtId.getText()));
-        if(txtNome.getText() == null || txtNome.getText().trim().equals("")){
+        if(txtNome.getText() == null || txtNome.getText().trim().equals(" ")){
             exception.addErro("Nome","O campo não pode ser vazio!");
         }
         obj.setNome(txtNome.getText());
